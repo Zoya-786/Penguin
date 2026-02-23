@@ -25,7 +25,7 @@ export function Navbar() {
 
   return (
     <nav className="border-b bg-background px-4 py-2 flex items-center justify-between">
-      <div className="font-bold text-xl text-primary">PenguinApp</div>
+      <div className="font-bold text-xl text-primary">Axion</div>
       
       <div className="flex items-center gap-4">
         {user ? (
