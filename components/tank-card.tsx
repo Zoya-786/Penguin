@@ -1,65 +1,52 @@
 "use client";
-
-import { TankData } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { StatusBadge } from "@/components/status-badge";
-import { Droplets, Activity, Waves } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+import { Droplets, Thermometer, Activity, Waves, Gauge } from "lucide-react";
 
-interface TankCardProps {
-  tank: TankData;
-}
-
-export function TankCard({ tank }: TankCardProps) {
+export function TankCard({ tank }: { tank: any }) {
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-lg font-bold">{tank.name}</CardTitle>
-        <StatusBadge status={tank.status} />
+    <Card className="bg-[#0a0a0a] border-white/10 overflow-hidden border-t-2 border-t-primary">
+      <CardHeader className="bg-white/[0.02] py-3">
+        <CardTitle className="text-sm font-mono text-primary uppercase tracking-widest flex justify-between">
+          {tank.location?.replace('_', ' ')}
+          <span className="animate-pulse text-[10px] text-emerald-500">● LIVE</span>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Tank Level Display */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs">
-            <span className="text-muted-foreground">Water Level</span>
-            <span className="font-medium">{tank.tankLevel}%</span>
-          </div>
-          <Progress value={tank.tankLevel} className="h-2" />
+      <CardContent className="pt-4 space-y-4">
+        {/* Main Grid for 4 Primary Sensors */}
+        <div className="grid grid-cols-2 gap-4">
+          <Metric icon={<Droplets size={14}/>} label="pH" value={tank.ph} unit="" />
+          <Metric icon={<Activity size={14}/>} label="TDS" value={tank.tds} unit="ppm" />
+          <Metric icon={<Waves size={14}/>} label="Turb" value={tank.turbidity} unit="ntu" />
+          <Metric icon={<Thermometer size={14}/>} label="Temp" value={tank.temperature} unit="°C" />
         </div>
 
-        {/* Real-time Metrics Grid */}
-        <div className="grid grid-cols-2 gap-4 pt-2">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-              <Activity className="h-4 w-4 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-[10px] text-muted-foreground uppercase">pH Level</p>
-              <p className="text-sm font-semibold">{tank.ph.toFixed(1)}</p>
-            </div>
+        {/* Tank Level Progress Bar */}
+        <div className="pt-2 border-t border-white/5">
+          <div className="flex justify-between text-[10px] font-mono text-muted-foreground mb-1">
+            <span className="flex items-center gap-1"><Gauge size={10}/> CAPACITY</span>
+            <span>{tank.tankLevel}%</span>
           </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-              <Waves className="h-4 w-4 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-[10px] text-muted-foreground uppercase">TDS</p>
-              <p className="text-sm font-semibold">{tank.tds} ppm</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg">
-              <Droplets className="h-4 w-4 text-cyan-600" />
-            </div>
-            <div>
-              <p className="text-[10px] text-muted-foreground uppercase">Turbidity</p>
-              <p className="text-sm font-semibold">{tank.turbidity} NTU</p>
-            </div>
+          <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-primary transition-all duration-1000" 
+              style={{ width: `${tank.tankLevel}%` }}
+            />
           </div>
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function Metric({ icon, label, value, unit }: any) {
+  return (
+    <div className="bg-white/[0.03] p-2 rounded border border-white/5">
+      <div className="flex items-center gap-1 text-[9px] text-muted-foreground uppercase font-mono mb-1">
+        {icon} {label}
+      </div>
+      <div className="text-lg font-black text-white leading-none">
+        {value} <span className="text-[10px] font-normal text-muted-foreground">{unit}</span>
+      </div>
+    </div>
   );
 }
